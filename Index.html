@@ -46,9 +46,9 @@
     <button onclick="saveData()">Save</button>
 
     <script>
-        const apiUrl = https://script.google.com/macros/s/AKfycbyCG5d_S8RxVyecHflaw5dXY1lAXbl4xYc99F6Q8gc6juISEqbl8vn8fAD247DNOV2O/exec'; // Replace with your Apps Script URL
+        const apiUrl = 'https://script.google.com/macros/s/AKfycbxKpbeo51Z-KcQmL44vAfkiaoEKrhFP7np3zae-tkOqBK4wDduYEV3q8yDkUvAunp2R/exec'; // Replace with your Apps Script URL
 
-        // Fetch room numbers and curtain references for the dropdown
+        // Fetch room numbers for the dropdown
         async function fetchRooms() {
             const response = await fetch(apiUrl);
             const rooms = await response.json();
@@ -56,8 +56,8 @@
 
             rooms.forEach(room => {
                 const option = document.createElement('option');
-                option.value = room.roomNumber; // Set value to Room Number only
-                option.textContent = `${room.roomNumber} - ${room.curtainRef}`; // Display Room Number and Curtain Ref
+                option.value = room; // Set value to Room Number
+                option.textContent = room; // Display Room Number
                 dropdown.appendChild(option);
             });
         }
