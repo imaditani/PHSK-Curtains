@@ -23,10 +23,12 @@
 </head>
 <body>
     <h1>Room Management</h1>
-    <input type="text" id="roomNumber" placeholder="Enter Room Number">
-    <button onclick="loadData()">Lookup Room</button>
+    <select id="roomDropdown" onchange="loadData()">
+        <option value="">Select a Room</option>
+    </select>
 
     <div class="result">
+        <p>Curtain Ref: <span id="curtainRef"></span></p>
         <p>Curtain Box: <span id="curtainBox"></span></p>
         <p>Rail Box: <span id="railBox"></span></p>
         <p>Status: <span id="savedStatus"></span></p>
@@ -44,16 +46,34 @@
     <button onclick="saveData()">Save</button>
 
     <script>
-        const apiUrl = 'https://script.google.com/macros/s/AKfycbwAMWiv7yE5pe54ShhHIob6U4QJ9L_XGr-EKpTLOPrOEuDvs_hJtCy2gIofoqAkSx6x/exec'; // Replace with your Apps Script URL
+        const apiUrl = 'https://script.google.com/macros/s/AKfycby_e9QlBJu3PiXFA0Vg-0l17M7NE_DQsX53CwV0nsxI2haLkgHjEsix6S0MJHlSegde/exec'; // Replace with your Apps Script URL
 
+        // Fetch room numbers and curtain references for the dropdown
+        async function fetchRooms() {
+            const response = await fetch(apiUrl);
+            const rooms = await response.json();
+            const dropdown = document.getElementById('roomDropdown');
+
+            rooms.forEach(room => {
+                const option = document.createElement('option');
+                option.value = room.roomNumber;
+                option.textContent = `${room.roomNumber} - ${room.curtainRef}`;
+                dropdown.appendChild(option);
+            });
+        }
+
+        // Load data for the selected room
         async function loadData() {
-            const roomNumber = document.getElementById('roomNumber').value;
+            const roomNumber = document.getElementById('roomDropdown').value;
+            if (!roomNumber) return;
+
             const response = await fetch(`${apiUrl}?roomNumber=${roomNumber}`);
             const result = await response.json();
 
             if (result.error) {
                 alert(result.error);
             } else {
+                document.getElementById('curtainRef').textContent = result.curtainRef;
                 document.getElementById('curtainBox').textContent = result.curtainBox;
                 document.getElementById('railBox').textContent = result.railBox;
                 document.getElementById('savedStatus').textContent = result.status;
@@ -61,8 +81,9 @@
             }
         }
 
+        // Save status and notes
         async function saveData() {
-            const roomNumber = document.getElementById('roomNumber').value;
+            const roomNumber = document.getElementById('roomDropdown').value;
             const status = document.getElementById('status').value;
             const notes = document.getElementById('notes').value;
 
@@ -80,6 +101,9 @@
                 alert(result.error || 'Failed to save data.');
             }
         }
+
+        // Initialize the dropdown when the page loads
+        fetchRooms();
     </script>
 </body>
 </html>
