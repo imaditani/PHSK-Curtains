@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Management</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+        input, select, textarea, button {
+            padding: 10px;
+            margin: 5px 0;
+            width: 100%;
+            max-width: 300px;
+        }
+        .result {
+            margin-top: 20px;
+            font-size: 1.2em;
+        }
+    </style>
+</head>
+<body>
+    <h1>Room Management</h1>
+    <input type="text" id="roomNumber" placeholder="Enter Room Number">
+    <button onclick="loadData()">Lookup Room</button>
+
+    <div class="result">
+        <p>Curtain Box: <span id="curtainBox"></span></p>
+        <p>Rail Box: <span id="railBox"></span></p>
+        <p>Status: <span id="savedStatus"></span></p>
+        <p>Notes: <span id="savedNotes"></span></p>
+    </div>
+
+    <h2>Update Status and Notes</h2>
+    <select id="status">
+        <option value="">Select Status</option>
+        <option value="On Going">On Going</option>
+        <option value="Done">Done</option>
+        <option value="Problem">Problem</option>
+    </select>
+    <textarea id="notes" placeholder="Add comments or notes"></textarea>
+    <button onclick="saveData()">Save</button>
+
+    <script>
+        const apiUrl = 'YOUR_GOOGLE_APPS_SCRIPT_URL'; // Replace with your Apps Script URL
+
+        async function loadData() {
+            const roomNumber = document.getElementById('roomNumber').value;
+            const response = await fetch(`${apiUrl}?roomNumber=${roomNumber}`);
+            const result = await response.json();
+
+            if (result.error) {
+                alert(result.error);
+            } else {
+                document.getElementById('curtainBox').textContent = result.curtainBox;
+                document.getElementById('railBox').textContent = result.railBox;
+                document.getElementById('savedStatus').textContent = result.status;
+                document.getElementById('savedNotes').textContent = result.notes;
+            }
+        }
+
+        async function saveData() {
+            const roomNumber = document.getElementById('roomNumber').value;
+            const status = document.getElementById('status').value;
+            const notes = document.getElementById('notes').value;
+
+            const response = await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `roomNumber=${roomNumber}&status=${status}&notes=${notes}`
+            });
+            const result = await response.json();
+
+            if (result.success) {
+                alert('Data saved!');
+                loadData(); // Refresh the displayed data
+            } else {
+                alert(result.error || 'Failed to save data.');
+            }
+        }
+    </script>
+</body>
+</html>
