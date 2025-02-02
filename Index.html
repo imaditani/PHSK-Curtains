@@ -46,7 +46,7 @@
     <button onclick="saveData()">Save</button>
 
     <script>
-        const apiUrl = 'https://script.google.com/macros/s/AKfycby_e9QlBJu3PiXFA0Vg-0l17M7NE_DQsX53CwV0nsxI2haLkgHjEsix6S0MJHlSegde/exec'; // Replace with your Apps Script URL
+        const apiUrl = 'https://script.google.com/macros/s/your-script-id/exec'; // Replace with your Apps Script URL
 
         // Fetch room numbers and curtain references for the dropdown
         async function fetchRooms() {
@@ -56,8 +56,8 @@
 
             rooms.forEach(room => {
                 const option = document.createElement('option');
-                option.value = room.roomNumber;
-                option.textContent = `${room.roomNumber} - ${room.curtainRef}`;
+                option.value = room.roomNumber; // Set value to Room Number only
+                option.textContent = `${room.roomNumber} - ${room.curtainRef}`; // Display Room Number and Curtain Ref
                 dropdown.appendChild(option);
             });
         }
